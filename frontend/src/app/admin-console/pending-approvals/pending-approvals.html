@@ -1,0 +1,116 @@
+<div class="pending-approvals">
+  <h2 class="section-title">Pending Listing Approvals ({{ collectionSize }})</h2>
+  
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="alert alert-info d-flex align-items-center" role="alert">
+    <div class="spinner-border spinner-border-sm me-2" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <span>Loading listings...</span>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="errorMessage && !isLoading" class="alert alert-danger" role="alert">
+    <strong>Error:</strong> {{ errorMessage }}
+  </div>
+
+  <div class="locations-table" *ngIf="!isLoading">
+    <!-- Desktop Table Header -->
+    <div class="table-header desktop-only">
+      <div class="col-header">Location</div>
+      <div class="col-header">Provider</div>
+      <div class="col-header">Services</div>
+      <div class="col-header">Status</div>
+      <div class="col-header">Submitted</div>
+      <div class="col-header">Actions</div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="pendingListings.length === 0" class="alert alert-info" role="alert">
+      No pending listings found.
+    </div>
+
+    <!-- Table Rows -->
+    <div class="table-row" *ngFor="let listing of pendingListings">
+      <div class="col-location">
+        <div class="location-name">{{ listing.name }}</div>
+        <div class="location-address">{{ listing.address }}</div>
+      </div>
+      
+      <div class="col-provider">
+        <span class="mobile-label">Provider:</span>
+        {{ listing.provider }}
+      </div>
+      
+      <div class="col-services">
+        <span class="mobile-label">Services:</span>
+        <div class="services-icons">
+          <span class="service-icon" *ngFor="let service of listing.services.slice(0, 3)">
+            {{ getServiceIcon(service) }}
+          </span>
+          <span class="service-more" *ngIf="listing.services.length > 3">
+            +{{ listing.services.length - 3 }}
+          </span>
+        </div>
+      </div>
+      
+      <div class="col-status">
+        <span class="mobile-label">Status:</span>
+        <span class="status-badge" 
+              [class.status-verified]="listing.verificationStatus === 'verified'" 
+              [class.status-pending]="listing.verificationStatus === 'pending'"
+              [class.status-rejected]="listing.verificationStatus === 'rejected'">
+          {{ listing.verificationStatus }}
+        </span>
+      </div>
+      
+      <div class="col-submitted">
+        <span class="mobile-label">Submitted:</span>
+        {{ listing.submitted }}
+      </div>
+      
+      <div class="col-actions">
+        <span class="mobile-label">Actions:</span>
+        <div class="action-buttons">
+          <button class="btn-action btn-view" (click)="viewListing(listing)" title="View">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="currentColor"/>
+            </svg>
+          </button>
+          <button class="btn-action btn-approve" 
+                  (click)="updateListingStatus(listing, 'verified')" 
+                  [disabled]="listing.verificationStatus === 'verified'"
+                  title="Approve">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/>
+            </svg>
+          </button>
+          <button class="btn-action btn-reject" 
+                  (click)="updateListingStatus(listing, 'rejected')" 
+                  [disabled]="listing.verificationStatus === 'rejected'"
+                  title="Reject">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-container" *ngIf="!isLoading && collectionSize > 0">
+      <div class="pagination-info">
+        Showing {{ Math.min((page - 1) * pageSize + 1, collectionSize) }} to {{ Math.min(page * pageSize, collectionSize) }} of {{ collectionSize }} entries
+      </div>
+      <ngb-pagination 
+        [(page)]="page" 
+        [pageSize]="pageSize" 
+        [collectionSize]="collectionSize" 
+        [maxSize]="5" 
+        [rotate]="true" 
+        [boundaryLinks]="true"
+        (pageChange)="onPageChange($event)">
+      </ngb-pagination>
+    </div>
+  </div>
+</div>

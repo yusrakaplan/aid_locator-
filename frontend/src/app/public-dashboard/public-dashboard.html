@@ -1,0 +1,244 @@
+<div class="main-wrapper">
+  <div class="container">
+    <!-- Health Check Results -->
+    @if (healthResult) {
+      <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+        <h5 class="alert-heading">Health Check Result:</h5>
+        <pre class="mb-0">{{ healthResult | json }}</pre>
+        <button type="button" class="btn-close" (click)="clearHealthResult()" aria-label="Close"></button>
+      </div>
+    }
+    
+    @if (healthError) {
+      <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+        <h5 class="alert-heading">Health Check Error:</h5>
+        <p class="mb-0">{{ healthError }}</p>
+        <button type="button" class="btn-close" (click)="clearHealthResult()" aria-label="Close"></button>
+      </div>
+    }
+    
+    @if (isLoading) {
+      <div class="alert alert-info mt-3" role="alert">
+        <div class="d-flex align-items-center">
+          <div class="spinner-border spinner-border-sm me-2" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <span>Checking health status...</span>
+        </div>
+      </div>
+    }
+
+    <!-- Listings Loading/Error States -->
+    @if (isLoadingListings) {
+      <div class="alert alert-info mt-3" role="alert">
+        <div class="d-flex align-items-center">
+          <div class="spinner-border spinner-border-sm me-2" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <span>Loading listings...</span>
+        </div>
+      </div>
+    }
+
+    @if (listingsError) {
+      <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+        <h5 class="alert-heading">Error Loading Listings:</h5>
+        <p class="mb-0">{{ listingsError }}</p>
+        <button type="button" class="btn btn-sm btn-outline-danger mt-2" (click)="loadListings()">
+          Retry
+        </button>
+      </div>
+    }
+
+    <!-- Filter Services Section -->
+    @if (!isLoadingListings && !listingsError) {
+    <div class="filter-section mt-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+          <!-- Header with title, clear all button, and accordion toggle -->
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex align-items-center flex-grow-1" style="cursor: pointer;" (click)="toggleFilterAccordion()">
+              <div class="flex-grow-1">
+                <h5 class="card-title mb-1 fw-bold d-flex align-items-center">
+                  Filter Services
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    width="20" 
+                    height="20" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    stroke-width="2" 
+                    class="ms-2 accordion-icon"
+                    [class.rotated]="isFilterCollapsed">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </h5>
+                <small class="text-muted">{{ activeFilters.length }} service filter(s) active{{ activeRadiusKm ? ', ' + activeRadiusKm + 'km radius' : '' }}</small>
+              </div>
+            </div>
+            <button 
+              type="button" 
+              class="btn btn-outline-secondary btn-sm ms-2"
+              (click)="clearAllFilters(); $event.stopPropagation()"
+              [disabled]="activeFilters.length === 0 && activeRadiusKm === null">
+              Clear All
+            </button>
+          </div>
+          
+          <!-- Collapsible Filter Content -->
+          <div class="filter-content" [class.collapsed]="isFilterCollapsed">
+          <!-- Radius Filter Section -->
+          <div class="mb-3">
+            <h6 class="fw-semibold mb-2" style="font-size: 0.9rem;">Filter by Distance</h6>
+            <div class="d-flex flex-wrap gap-2">
+              <button 
+                type="button" 
+                class="btn filter-btn radius-filter"
+                [class.active]="isRadiusFilterActive(2)"
+                (click)="toggleRadiusFilter(2)"
+                [disabled]="!userLocation">
+                <span class="filter-icon me-2">📍</span>
+                2km
+              </button>
+              
+              <button 
+                type="button" 
+                class="btn filter-btn radius-filter"
+                [class.active]="isRadiusFilterActive(5)"
+                (click)="toggleRadiusFilter(5)"
+                [disabled]="!userLocation">
+                <span class="filter-icon me-2">📍</span>
+                5km
+              </button>
+              
+              <button 
+                type="button" 
+                class="btn filter-btn radius-filter"
+                [class.active]="isRadiusFilterActive(10)"
+                (click)="toggleRadiusFilter(10)"
+                [disabled]="!userLocation">
+                <span class="filter-icon me-2">📍</span>
+                10km
+              </button>
+            </div>
+            @if (!userLocation) {
+              <small class="text-muted d-block mt-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-1">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                Enable location access to use distance filters
+              </small>
+            }
+          </div>
+          
+          <!-- Service Filters Section -->
+          <div>
+            <h6 class="fw-semibold mb-2" style="font-size: 0.9rem;">Filter by Services</h6>
+            <div class="filter-buttons d-flex flex-wrap gap-2">
+            <button 
+              type="button" 
+              class="btn filter-btn"
+              [class.active]="isFilterActive('food')"
+              (click)="toggleFilter('food')">
+              <span class="filter-icon me-2">🍽️</span>
+              Food
+            </button>
+            
+            <button 
+              type="button" 
+              class="btn filter-btn"
+              [class.active]="isFilterActive('shelter')"
+              (click)="toggleFilter('shelter')">
+              <span class="filter-icon me-2">🏠</span>
+              Shelter
+            </button>
+            
+            <button 
+              type="button" 
+              class="btn filter-btn"
+              [class.active]="isFilterActive('water')"
+              (click)="toggleFilter('water')">
+              <span class="filter-icon me-2">💧</span>
+              Water
+            </button>
+            
+            <button 
+              type="button" 
+              class="btn filter-btn"
+              [class.active]="isFilterActive('toilets')"
+              (click)="toggleFilter('toilets')">
+              <span class="filter-icon me-2">🚻</span>
+              Toilets
+            </button>
+            
+            <button 
+              type="button" 
+              class="btn filter-btn"
+              [class.active]="isFilterActive('disabled-access')"
+              (click)="toggleFilter('disabled-access')">
+              <span class="filter-icon me-2">♿</span>
+              Disabled Access
+            </button>
+            
+            <button 
+              type="button" 
+              class="btn filter-btn"
+              [class.active]="isFilterActive('pet-friendly')"
+              (click)="toggleFilter('pet-friendly')">
+              <span class="filter-icon me-2">🐕</span>
+              Pet-Friendly
+            </button>
+            
+            <button 
+              type="button" 
+              class="btn filter-btn"
+              [class.active]="isFilterActive('child-safe')"
+              (click)="toggleFilter('child-safe')">
+              <span class="filter-icon me-2">👶</span>
+              Child-Safe
+            </button>
+            
+            <button 
+              type="button" 
+              class="btn filter-btn"
+              [class.active]="isFilterActive('free-wifi')"
+              (click)="toggleFilter('free-wifi')">
+              <span class="filter-icon me-2">📶</span>
+              Free Wi-Fi
+            </button>
+          </div>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Map View Toggle Button -->
+    <div class="map-toggle-mobile mt-4">
+      <button 
+        type="button" 
+        class="btn btn-dark btn-sm w-100"
+        (click)="toggleMapView()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-2">
+          <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
+          <line x1="8" y1="2" x2="8" y2="18"></line>
+          <line x1="16" y1="6" x2="16" y2="22"></line>
+        </svg>
+        {{ showMapViewOnMobile ? 'Hide Map View' : 'Show Map View' }}
+      </button>
+    </div>
+
+    <!-- Google Maps Section -->
+    <div class="map-view-container" [class.mobile-visible]="showMapViewOnMobile">
+      <app-map-view [locations]="filteredLocations" class="mt-4"></app-map-view>
+    </div>
+
+    <!-- Locations List Section -->
+    <app-locations-list [locations]="filteredLocations" class="mt-4 mb-5"></app-locations-list>
+    }
+
+  </div>
+</div>

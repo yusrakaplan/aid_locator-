@@ -1,0 +1,45 @@
+{
+  "name": "aid-locator",
+  "version": "1.0.0",
+  "description": "Aid Locator - A monorepo with Angular frontend and Spring Boot backend",
+  "scripts": {
+    "dev": "concurrently \"npm run start:backend\" \"npm run start:frontend\" --names \"backend,frontend\" --prefix name",
+    "start:backend": "mvn spring-boot:run -pl backend -s settings.xml",
+    "start:frontend": "cd frontend && npm start",
+    "build": "npm run build:backend && npm run build:frontend",
+    "build:backend": "mvn clean package -pl backend -s settings.xml -DskipTests",
+    "build:frontend": "cd frontend && npm run build --prod",
+    "install:all": "npm install && cd frontend && npm install",
+    "deps:check": "cd frontend && npm list --depth=0 && npm audit",
+    "deps:fix": "cd frontend && npm audit fix",
+    "deps:validate": "npm run install:all && npm run deps:check",
+    "install:frontend": "cd frontend && npm install",
+    "install:backend": "mvn dependency:resolve -pl backend -s settings.xml -q",
+    "docker:build": "npm run build:backend && docker-compose build",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "docker:clean": "docker-compose down -v --rmi all"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1"
+  },
+  "engines": {
+    "node": ">=20.19.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/your-username/aid-locator.git"
+  },
+  "keywords": [
+    "aid-locator",
+    "angular",
+    "spring-boot",
+    "monorepo",
+    "java",
+    "typescript"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}

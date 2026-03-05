@@ -1,0 +1,222 @@
+/* Main Content */
+.main-wrapper {
+  padding: 2rem 0;
+}
+
+/* Filter Section */
+.filter-section .card {
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.filter-section .card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Accordion Icon */
+.accordion-icon {
+  transition: transform 0.3s ease;
+}
+
+.accordion-icon.rotated {
+  transform: rotate(-180deg);
+}
+
+/* Filter Content - Collapsible */
+.filter-content {
+  max-height: 1000px;
+  overflow: hidden;
+  transition: max-height 0.4s ease, opacity 0.3s ease;
+  opacity: 1;
+}
+
+.filter-content.collapsed {
+  max-height: 0;
+  opacity: 0;
+  margin-bottom: 0 !important;
+}
+
+/* Filter Buttons */
+.filter-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.filter-btn {
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  color: #6c757d;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.filter-btn:hover {
+  background-color: #f8f9fa;
+  border-color: #adb5bd;
+  color: #495057;
+  transform: translateY(-1px);
+}
+
+.filter-btn.active {
+  background-color: #000;
+  border-color: #000;
+  color: white;
+}
+
+.filter-btn.active:hover {
+  background-color: #333;
+  border-color: #333;
+}
+
+.filter-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+/* Radius Filter Buttons - Same style as service filters */
+.filter-btn.radius-filter {
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+  color: #6c757d;
+}
+
+.filter-btn.radius-filter:hover:not(:disabled) {
+  background-color: #f8f9fa;
+  border-color: #adb5bd;
+  color: #495057;
+}
+
+.filter-btn.radius-filter.active {
+  background-color: #000;
+  border-color: #000;
+  color: white;
+}
+
+.filter-btn.radius-filter.active:hover {
+  background-color: #333;
+  border-color: #333;
+}
+
+.filter-btn.radius-filter:disabled {
+  background-color: #f8f9fa;
+  border-color: #dee2e6;
+  color: #adb5bd;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Services Section */
+.services-section .card {
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Active Filters */
+.badge {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.badge .btn-close {
+  font-size: 0.65rem;
+  opacity: 0.8;
+}
+
+.badge .btn-close:hover {
+  opacity: 1;
+}
+
+/* Health Check Results Styling */
+.alert pre {
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  padding: 0.75rem;
+  font-family: 'Monaco', 'Consolas', monospace;
+  font-size: 0.875rem;
+  white-space: pre-wrap;
+  margin-bottom: 0;
+}
+
+/* Mobile Map Toggle Button */
+.map-toggle-mobile {
+  display: none;
+}
+
+.map-view-container {
+  display: block;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .main-wrapper {
+    padding: 1.5rem 0;
+  }
+  
+  /* Show toggle button on mobile */
+  .map-toggle-mobile {
+    display: block;
+  }
+  
+  .map-toggle-mobile .btn {
+    border-radius: 8px;
+    padding: 0.5rem 0.875rem;
+    font-weight: 500;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .map-toggle-mobile .btn svg {
+    vertical-align: middle;
+  }
+  
+  /* Hide map by default on mobile */
+  .map-view-container {
+    display: none;
+  }
+  
+  /* Show map when toggle is active */
+  .map-view-container.mobile-visible {
+    display: block;
+  }
+  
+  .filter-buttons {
+    gap: 0.5rem;
+  }
+  
+  .filter-btn {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.8rem;
+  }
+  
+  .card-body {
+    padding: 1.5rem !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .main-wrapper {
+    padding: 1rem 0;
+  }
+  
+  .filter-buttons {
+    gap: 0.4rem;
+  }
+  
+  .filter-btn {
+    font-size: 0.8rem;
+    padding: 0.35rem 0.7rem;
+  }
+}
